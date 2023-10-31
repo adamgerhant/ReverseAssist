@@ -1,0 +1,475 @@
+{
+    "reports": [
+        {
+            "label": "Mathematics/Applied Mathematics, Lower Division B.A.",
+            "key": 26277378,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Sociology, Lower Division B.A.",
+            "key": 26277380,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Physics, Lower Division B.A.",
+            "key": 26277381,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Philosophy, Lower Division B.A.",
+            "key": 26277382,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "History, Lower Division B.A.",
+            "key": 26277383,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Political Science, Lower Division B.A.",
+            "key": 26277384,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Psychology, Lower Division B.A.",
+            "key": 26277385,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Industrial Engineering & Operations Research, Lower Division B.S.",
+            "key": 26277386,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Materials Science and Engineering, Lower Division B.S.",
+            "key": 26277387,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Mechanical Engineering, Lower Division B.S.",
+            "key": 26277388,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Nuclear Engineering, Lower Division B.S.",
+            "key": 26277389,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Microbial Biology, Lower Division B.S.",
+            "key": 26277390,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Molecular Environmental Biology, Lower Division B.S.",
+            "key": 26277391,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Society and Environment, Lower Division B.S",
+            "key": 26277392,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Urban Studies, Lower Division B.A.",
+            "key": 26277393,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Landscape Architecture, Lower Division B.A.",
+            "key": 26277394,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Anthropology, Lower Division B.A.",
+            "key": 26278093,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "English, Lower Division B.A.",
+            "key": 26278095,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Economics, Lower Division B.A.",
+            "key": 26278096,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Bioengineering, Lower Division B.S.",
+            "key": 26278097,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Civil Engineering, Lower Division B.S.",
+            "key": 26278098,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Energy Engineering, Lower Division B.S.",
+            "key": 26278099,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Electrical Engineering & Computer Sciences, Lower Division B.S.",
+            "key": 26278100,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Engineering Mathematics and Statistics, Lower Division B.S.",
+            "key": 26278101,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Engineering Physics, Lower Division B.S.",
+            "key": 26278102,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Conservation and Resource Studies, Lower Division B.S.",
+            "key": 26278103,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Environmental Engineering Science, Lower Division B.S.",
+            "key": 26278104,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Genetics and Plant Biology, Lower Division B.S.",
+            "key": 26278105,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Environmental Sciences, Lower Division B.S.",
+            "key": 26278106,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Nutritional Science, Lower Division B.S.",
+            "key": 26278107,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Chemical Biology, Lower Division B.S.",
+            "key": 26278108,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Chemistry, Lower Division B.A. and B.S.",
+            "key": 26278109,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Chemical Engineering, Lower Division B.S.",
+            "key": 26278110,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Architecture, Lower Division B.A.",
+            "key": 26278111,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Business Administration, Lower Division B.S.",
+            "key": 26278112,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "African American Studies, Lower Division B.A.",
+            "key": 26278113,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Sustainable Environmental Design, Lower Division B.A.",
+            "key": 26278114,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Art (Practice of), Lower Division B.A.",
+            "key": 26278115,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "History of Art, Lower Division B.A.",
+            "key": 26278116,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Asian American and Asian Diaspora Studies, Lower Division B.A.",
+            "key": 26278117,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Astrophysics, Lower Division B.A.",
+            "key": 26278118,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Celtic Studies, Lower Division B.A.",
+            "key": 26278119,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Chinese (East Asian Languages), Lower Division B.A.",
+            "key": 26278120,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "American Studies, Lower Division B.A.",
+            "key": 26278121,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Comparative Literature, Lower Division B.A.",
+            "key": 26278122,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Computer Science, Lower Division B.A.",
+            "key": 26278123,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Dance and Performance Studies, Lower Division B.A.",
+            "key": 26278124,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Dutch Studies, Lower Division B.A.",
+            "key": 26278125,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Cognitive Science, Lower Division B.A.",
+            "key": 26278126,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "East Asian Religion, Thought, and Culture, Lower Division B.A.",
+            "key": 26278127,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "French, Lower Division B.A.",
+            "key": 26278128,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Gender and Women's Studies, Lower Division B.A.",
+            "key": 26278129,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Ethnic Studies, Lower Division B.A.",
+            "key": 26278130,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "German, Lower Division B.A.",
+            "key": 26278131,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Geography, Lower Division B.A.",
+            "key": 26278132,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Greek, Lower Division B.A.",
+            "key": 26278133,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Interdisciplinary Studies Field Major, Lower Division B.A.",
+            "key": 26278134,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Integrative Biology, Lower Division B.A.",
+            "key": 26278135,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Italian Studies, Lower Division B.A.",
+            "key": 26278136,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Japanese (East Asian Languages), Lower Division B.A.",
+            "key": 26278137,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Linguistics, Lower Division B.A.",
+            "key": 26278138,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Latin, Lower Division B.A.",
+            "key": 26278139,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Media Studies, Lower Division B.A.",
+            "key": 26278140,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Legal Studies, Lower Division B.A.",
+            "key": 26278141,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Music, Lower Division B.A.",
+            "key": 26278142,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Native American Studies, Lower Division B.A.",
+            "key": 26278143,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Operations Research and Management Science, Lower Division B.A.",
+            "key": 26278144,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Political Economy, Lower Division B.A.",
+            "key": 26278145,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Molecular and Cell Biology, Lower Division B.A.",
+            "key": 26278146,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Rhetoric, Lower Division B.A.",
+            "key": 26278147,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Scandinavian, Lower Division B.A.",
+            "key": 26278148,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Public Health, Lower Division B.A.",
+            "key": 26278149,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Slavic Languages and Literatures, Lower Division B.A.",
+            "key": 26278150,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Social Welfare, Lower Division B.A.",
+            "key": 26278151,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "South and Southeast Asian Studies, Lower Division B.A.",
+            "key": 26278152,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Theater and Performance Studies, Lower Division B.A.",
+            "key": 26278153,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Global Studies, Lower Division B.A.",
+            "key": 26278154,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Spanish and Portuguese, Lower Division B.A.",
+            "key": 26278155,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Data Science, Lower Division B.A.",
+            "key": 26278156,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Atmospheric Science, Lower Division B.A.",
+            "key": 26278157,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Ecosystem Management & Forestry, Lower Division B.S.",
+            "key": 26278158,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Geology, Lower Division B.A.",
+            "key": 26278159,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Environmental Earth Science, Lower Division B.A.",
+            "key": 26278160,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Geophysics, Lower Division B.A.",
+            "key": 26278161,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Marine Science, Lower Division B.A.",
+            "key": 26278162,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Film & Media, Lower Division B.A.",
+            "key": 26278163,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Middle Eastern Languages and Cultures, Lower Division B.A. ",
+            "key": 26278164,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Chicana/o and Latina/o Studies, Lower Division B.A.",
+            "key": 26278165,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Planetary Science, Lower Division B.A.",
+            "key": 26278166,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Greek and Latin, Lower Division B.A.",
+            "key": 26278167,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Ancient Greek and Roman Civilizations, Lower Division B.A.",
+            "key": 26278168,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Environmental Economics and Policy, Lower Division B.S.",
+            "key": 26278169,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Aerospace Engineering, Lower Division B.S.",
+            "key": 26278172,
+            "ownerInstitutionId": 0
+        },
+        {
+            "label": "Statistics, Lower Division B.A.",
+            "key": 26301064,
+            "ownerInstitutionId": 0
+        }
+    ],
+    "allReports": []
+}
