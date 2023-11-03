@@ -5,9 +5,7 @@ import re
 import sys
 import math
 import os
-import pdfrw
-from pdfminer.high_level import extract_text
-import fitz  # PyMuPDF
+import fitz  #pip install PyMuPDF
 import io
 
 class PDFExtractor:
