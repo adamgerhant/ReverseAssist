@@ -6,9 +6,7 @@ import re
 import sys
 import math
 import os
-import pdfrw
-from pdfminer.high_level import extract_text
-import fitz  # PyMuPDF
+import fitz  #pip install PyMuPDF
 import io
 from Database import add_major, get_college_id
 from PDFExtractor import PDFExtractor
@@ -189,7 +187,7 @@ class PDFGrabber():
         print("parsing courses for all majors")
         with open(f'python/majors/{self.school_id}majors.json', 'r') as majorFile:
             majorData = json.load(majorFile)
-        parse_courses_from_major(majorData)
+        self.parse_courses_from_major(majorData, "Thread0", True)
 
     #--------------------main function------------------#
     def parse_courses_from_major(self, majorData, threadName, checkIfExists):
@@ -251,18 +249,18 @@ class PDFGrabber():
         #   json.dump(courseData, file, indent=4)
 
 
-def parse_courses_all_majors_multithreaded(collegeId):
+def parse_courses_all_majors_multithreaded(collegeId, checkIfExists):
     pdfOBJ = PDFGrabber(collegeId, 0.5)
 
     def run_parse_courses_from_major(obj, majorData, threadName):
-        obj.parse_courses_from_major(majorData, threadName, True)
+        obj.parse_courses_from_major(majorData, threadName, checkIfExists)
 
     threads = []
 
     with open(f'python/majors/{collegeId}majors.json', 'r') as majorFile:
         majorData = json.load(majorFile)
 
-    numThreads = 5
+    numThreads = 3
 
     groupedMajorData = []
     extendedMajorData = []
@@ -288,11 +286,31 @@ def parse_courses_all_majors_multithreaded(collegeId):
     else:
         print("The arrays are different")
 
-pdfOBJ = PDFGrabber(7, 0.5)
+
+#step 1: get majors for all UCs
+#get_majors()
+
+#step 2: get kesys for all UCs
+#pdfOBJ = PDFGrabber(7, 0.5)
+#pdfOBJ.get_keys_for_university()
+
+#step 3: parse courses from assist and add to database
+#params: schoolId, checkIfExists: checks if item to add already exists if set to True. Safer but ~20-30% slower.
+#parse_courses_all_majors_multithreaded(7, True)
+
+#UC ids
+#{"University of California, Berkeley": 79,
+#"University of California, Irvine": 120, 
+#"University of California, Davis": 89,
+#"University of California, Los Angeles": 117, 
+#"University of California, Riverside": 46, 
+#"University of California, San Diego": 7, 
+#"University of California, Santa Barbara": 128, 
+#"University of California, Santa Cruz": 132, 
+#"University of California, Merced": 144
+#}
+
+#other function examples:
 #pdfOBJ.parse_courses_from_major(["Bioengineering B.S."], "thread 0", False)
 #pdfOBJ.save_documents_for_major("Electrical Engineering & Computer Sciences, Lower Division B.S.")
 #pdfOBJ.parse_courses_for_major_from_file("American Studies, Lower Division B.A.")
-#pdfOBJ.get_keys_for_university()
-parse_courses_all_majors_multithreaded(7)
-
-#get_majors()

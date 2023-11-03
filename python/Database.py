@@ -2,7 +2,6 @@ import requests
 import json
 import os
 import time
-import boto3
 import csv
 # establish a session with requests session
 session = requests.Session()
