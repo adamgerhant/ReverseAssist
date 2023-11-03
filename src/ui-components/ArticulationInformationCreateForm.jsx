@@ -9,12 +9,10 @@ import * as React from "react";
 import { Button, Flex, Grid, TextField } from "@aws-amplify/ui-react";
 import { fetchByPath, getOverrideProps, validateField } from "./utils";
 import { API } from "aws-amplify";
-import { getCourse } from "../graphql/queries";
-import { updateCourse } from "../graphql/mutations";
-export default function CourseUpdateForm(props) {
+import { createArticulationInformation } from "../graphql/mutations";
+export default function ArticulationInformationCreateForm(props) {
   const {
-    id: idProp,
-    course: courseModelProp,
+    clearOnSuccess = true,
     onSuccess,
     onError,
     onSubmit,
@@ -24,35 +22,20 @@ export default function CourseUpdateForm(props) {
     ...rest
   } = props;
   const initialValues = {
-    name: "",
+    college: "",
+    assistKey: "",
   };
-  const [name, setName] = React.useState(initialValues.name);
+  const [college, setCollege] = React.useState(initialValues.college);
+  const [assistKey, setAssistKey] = React.useState(initialValues.assistKey);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
-    const cleanValues = courseRecord
-      ? { ...initialValues, ...courseRecord }
-      : initialValues;
-    setName(cleanValues.name);
+    setCollege(initialValues.college);
+    setAssistKey(initialValues.assistKey);
     setErrors({});
   };
-  const [courseRecord, setCourseRecord] = React.useState(courseModelProp);
-  React.useEffect(() => {
-    const queryData = async () => {
-      const record = idProp
-        ? (
-            await API.graphql({
-              query: getCourse.replaceAll("__typename", ""),
-              variables: { id: idProp },
-            })
-          )?.data?.getCourse
-        : courseModelProp;
-      setCourseRecord(record);
-    };
-    queryData();
-  }, [idProp, courseModelProp]);
-  React.useEffect(resetStateValues, [courseRecord]);
   const validations = {
-    name: [{ type: "Required" }],
+    college: [{ type: "Required" }],
+    assistKey: [{ type: "Required" }],
   };
   const runValidationTasks = async (
     fieldName,
@@ -80,7 +63,8 @@ export default function CourseUpdateForm(props) {
       onSubmit={async (event) => {
         event.preventDefault();
         let modelFields = {
-          name,
+          college,
+          assistKey,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -111,16 +95,18 @@ export default function CourseUpdateForm(props) {
             }
           });
           await API.graphql({
-            query: updateCourse.replaceAll("__typename", ""),
+            query: createArticulationInformation.replaceAll("__typename", ""),
             variables: {
               input: {
-                id: courseRecord.id,
                 ...modelFields,
               },
             },
           });
           if (onSuccess) {
             onSuccess(modelFields);
+          }
+          if (clearOnSuccess) {
+            resetStateValues();
           }
         } catch (err) {
           if (onError) {
@@ -129,46 +115,79 @@ export default function CourseUpdateForm(props) {
           }
         }
       }}
-      {...getOverrideProps(overrides, "CourseUpdateForm")}
+      {...getOverrideProps(overrides, "ArticulationInformationCreateForm")}
       {...rest}
     >
       <TextField
-        label="Name"
+        label="College"
         isRequired={true}
         isReadOnly={false}
-        value={name}
+        type="number"
+        step="any"
+        value={college}
         onChange={(e) => {
-          let { value } = e.target;
+          let value = isNaN(parseInt(e.target.value))
+            ? e.target.value
+            : parseInt(e.target.value);
           if (onChange) {
             const modelFields = {
-              name: value,
+              college: value,
+              assistKey,
             };
             const result = onChange(modelFields);
-            value = result?.name ?? value;
+            value = result?.college ?? value;
           }
-          if (errors.name?.hasError) {
-            runValidationTasks("name", value);
+          if (errors.college?.hasError) {
+            runValidationTasks("college", value);
           }
-          setName(value);
+          setCollege(value);
         }}
-        onBlur={() => runValidationTasks("name", name)}
-        errorMessage={errors.name?.errorMessage}
-        hasError={errors.name?.hasError}
-        {...getOverrideProps(overrides, "name")}
+        onBlur={() => runValidationTasks("college", college)}
+        errorMessage={errors.college?.errorMessage}
+        hasError={errors.college?.hasError}
+        {...getOverrideProps(overrides, "college")}
+      ></TextField>
+      <TextField
+        label="Assist key"
+        isRequired={true}
+        isReadOnly={false}
+        type="number"
+        step="any"
+        value={assistKey}
+        onChange={(e) => {
+          let value = isNaN(parseInt(e.target.value))
+            ? e.target.value
+            : parseInt(e.target.value);
+          if (onChange) {
+            const modelFields = {
+              college,
+              assistKey: value,
+            };
+            const result = onChange(modelFields);
+            value = result?.assistKey ?? value;
+          }
+          if (errors.assistKey?.hasError) {
+            runValidationTasks("assistKey", value);
+          }
+          setAssistKey(value);
+        }}
+        onBlur={() => runValidationTasks("assistKey", assistKey)}
+        errorMessage={errors.assistKey?.errorMessage}
+        hasError={errors.assistKey?.hasError}
+        {...getOverrideProps(overrides, "assistKey")}
       ></TextField>
       <Flex
         justifyContent="space-between"
         {...getOverrideProps(overrides, "CTAFlex")}
       >
         <Button
-          children="Reset"
+          children="Clear"
           type="reset"
           onClick={(event) => {
             event.preventDefault();
             resetStateValues();
           }}
-          isDisabled={!(idProp || courseModelProp)}
-          {...getOverrideProps(overrides, "ResetButton")}
+          {...getOverrideProps(overrides, "ClearButton")}
         ></Button>
         <Flex
           gap="15px"
@@ -178,10 +197,7 @@ export default function CourseUpdateForm(props) {
             children="Submit"
             type="submit"
             variation="primary"
-            isDisabled={
-              !(idProp || courseModelProp) ||
-              Object.values(errors).some((e) => e?.hasError)
-            }
+            isDisabled={Object.values(errors).some((e) => e?.hasError)}
             {...getOverrideProps(overrides, "SubmitButton")}
           ></Button>
         </Flex>

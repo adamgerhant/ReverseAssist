@@ -6,7 +6,16 @@
 
 import * as React from "react";
 import { GridProps, TextFieldProps } from "@aws-amplify/ui-react";
-import { EscapeHatchProps } from "@aws-amplify/ui-react/internal";
+export declare type EscapeHatchProps = {
+    [elementHierarchy: string]: Record<string, unknown>;
+} | null;
+export declare type VariantValues = {
+    [key: string]: string;
+};
+export declare type Variant = {
+    variantValues: VariantValues;
+    overrides: EscapeHatchProps;
+};
 export declare type ValidationResponse = {
     hasError: boolean;
     errorMessage?: string;
@@ -15,16 +24,22 @@ export declare type ValidationFunction<T> = (value: T, validationResponse: Valid
 export declare type CollegeUpdateFormInputValues = {
     collegeId?: number;
     collegeName?: string;
+    latitude?: number;
+    longitude?: number;
 };
 export declare type CollegeUpdateFormValidationValues = {
     collegeId?: ValidationFunction<number>;
     collegeName?: ValidationFunction<string>;
+    latitude?: ValidationFunction<number>;
+    longitude?: ValidationFunction<number>;
 };
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type CollegeUpdateFormOverridesProps = {
     CollegeUpdateFormGrid?: PrimitiveOverrideProps<GridProps>;
     collegeId?: PrimitiveOverrideProps<TextFieldProps>;
     collegeName?: PrimitiveOverrideProps<TextFieldProps>;
+    latitude?: PrimitiveOverrideProps<TextFieldProps>;
+    longitude?: PrimitiveOverrideProps<TextFieldProps>;
 } & EscapeHatchProps;
 export declare type CollegeUpdateFormProps = React.PropsWithChildren<{
     overrides?: CollegeUpdateFormOverridesProps | undefined | null;

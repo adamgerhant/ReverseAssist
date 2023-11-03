@@ -4,6 +4,8 @@
  * Any changes to this file will be overwritten when running amplify pull. *
  **************************************************************************/
 
+export { default as ArticulationInformationCreateForm } from "./ArticulationInformationCreateForm";
+export { default as ArticulationInformationUpdateForm } from "./ArticulationInformationUpdateForm";
 export { default as CollegeCreateForm } from "./CollegeCreateForm";
 export { default as CollegeUpdateForm } from "./CollegeUpdateForm";
 export { default as CourseCreateForm } from "./CourseCreateForm";

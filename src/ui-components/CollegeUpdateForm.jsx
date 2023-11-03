@@ -7,8 +7,7 @@
 /* eslint-disable */
 import * as React from "react";
 import { Button, Flex, Grid, TextField } from "@aws-amplify/ui-react";
-import { getOverrideProps } from "@aws-amplify/ui-react/internal";
-import { fetchByPath, validateField } from "./utils";
+import { fetchByPath, getOverrideProps, validateField } from "./utils";
 import { API } from "aws-amplify";
 import { getCollege } from "../graphql/queries";
 import { updateCollege } from "../graphql/mutations";
@@ -27,11 +26,15 @@ export default function CollegeUpdateForm(props) {
   const initialValues = {
     collegeId: "",
     collegeName: "",
+    latitude: "",
+    longitude: "",
   };
   const [collegeId, setCollegeId] = React.useState(initialValues.collegeId);
   const [collegeName, setCollegeName] = React.useState(
     initialValues.collegeName
   );
+  const [latitude, setLatitude] = React.useState(initialValues.latitude);
+  const [longitude, setLongitude] = React.useState(initialValues.longitude);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     const cleanValues = collegeRecord
@@ -39,6 +42,8 @@ export default function CollegeUpdateForm(props) {
       : initialValues;
     setCollegeId(cleanValues.collegeId);
     setCollegeName(cleanValues.collegeName);
+    setLatitude(cleanValues.latitude);
+    setLongitude(cleanValues.longitude);
     setErrors({});
   };
   const [collegeRecord, setCollegeRecord] = React.useState(collegeModelProp);
@@ -60,6 +65,8 @@ export default function CollegeUpdateForm(props) {
   const validations = {
     collegeId: [{ type: "Required" }],
     collegeName: [{ type: "Required" }],
+    latitude: [{ type: "Required" }],
+    longitude: [{ type: "Required" }],
   };
   const runValidationTasks = async (
     fieldName,
@@ -89,6 +96,8 @@ export default function CollegeUpdateForm(props) {
         let modelFields = {
           collegeId,
           collegeName,
+          latitude,
+          longitude,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -155,6 +164,8 @@ export default function CollegeUpdateForm(props) {
             const modelFields = {
               collegeId: value,
               collegeName,
+              latitude,
+              longitude,
             };
             const result = onChange(modelFields);
             value = result?.collegeId ?? value;
@@ -180,6 +191,8 @@ export default function CollegeUpdateForm(props) {
             const modelFields = {
               collegeId,
               collegeName: value,
+              latitude,
+              longitude,
             };
             const result = onChange(modelFields);
             value = result?.collegeName ?? value;
@@ -193,6 +206,68 @@ export default function CollegeUpdateForm(props) {
         errorMessage={errors.collegeName?.errorMessage}
         hasError={errors.collegeName?.hasError}
         {...getOverrideProps(overrides, "collegeName")}
+      ></TextField>
+      <TextField
+        label="Latitude"
+        isRequired={true}
+        isReadOnly={false}
+        type="number"
+        step="any"
+        value={latitude}
+        onChange={(e) => {
+          let value = isNaN(parseFloat(e.target.value))
+            ? e.target.value
+            : parseFloat(e.target.value);
+          if (onChange) {
+            const modelFields = {
+              collegeId,
+              collegeName,
+              latitude: value,
+              longitude,
+            };
+            const result = onChange(modelFields);
+            value = result?.latitude ?? value;
+          }
+          if (errors.latitude?.hasError) {
+            runValidationTasks("latitude", value);
+          }
+          setLatitude(value);
+        }}
+        onBlur={() => runValidationTasks("latitude", latitude)}
+        errorMessage={errors.latitude?.errorMessage}
+        hasError={errors.latitude?.hasError}
+        {...getOverrideProps(overrides, "latitude")}
+      ></TextField>
+      <TextField
+        label="Longitude"
+        isRequired={true}
+        isReadOnly={false}
+        type="number"
+        step="any"
+        value={longitude}
+        onChange={(e) => {
+          let value = isNaN(parseFloat(e.target.value))
+            ? e.target.value
+            : parseFloat(e.target.value);
+          if (onChange) {
+            const modelFields = {
+              collegeId,
+              collegeName,
+              latitude,
+              longitude: value,
+            };
+            const result = onChange(modelFields);
+            value = result?.longitude ?? value;
+          }
+          if (errors.longitude?.hasError) {
+            runValidationTasks("longitude", value);
+          }
+          setLongitude(value);
+        }}
+        onBlur={() => runValidationTasks("longitude", longitude)}
+        errorMessage={errors.longitude?.errorMessage}
+        hasError={errors.longitude?.hasError}
+        {...getOverrideProps(overrides, "longitude")}
       ></TextField>
       <Flex
         justifyContent="space-between"

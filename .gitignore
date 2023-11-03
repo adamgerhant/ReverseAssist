@@ -2,6 +2,8 @@
 
 /amplify
 .env
+/python/colleges
+/python/majors
 
 # dependencies
 /node_modules

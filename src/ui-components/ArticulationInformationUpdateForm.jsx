@@ -9,12 +9,12 @@ import * as React from "react";
 import { Button, Flex, Grid, TextField } from "@aws-amplify/ui-react";
 import { fetchByPath, getOverrideProps, validateField } from "./utils";
 import { API } from "aws-amplify";
-import { getCourse } from "../graphql/queries";
-import { updateCourse } from "../graphql/mutations";
-export default function CourseUpdateForm(props) {
+import { getArticulationInformation } from "../graphql/queries";
+import { updateArticulationInformation } from "../graphql/mutations";
+export default function ArticulationInformationUpdateForm(props) {
   const {
     id: idProp,
-    course: courseModelProp,
+    articulationInformation: articulationInformationModelProp,
     onSuccess,
     onError,
     onSubmit,
@@ -24,35 +24,40 @@ export default function CourseUpdateForm(props) {
     ...rest
   } = props;
   const initialValues = {
-    name: "",
+    college: "",
+    assistKey: "",
   };
-  const [name, setName] = React.useState(initialValues.name);
+  const [college, setCollege] = React.useState(initialValues.college);
+  const [assistKey, setAssistKey] = React.useState(initialValues.assistKey);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
-    const cleanValues = courseRecord
-      ? { ...initialValues, ...courseRecord }
+    const cleanValues = articulationInformationRecord
+      ? { ...initialValues, ...articulationInformationRecord }
       : initialValues;
-    setName(cleanValues.name);
+    setCollege(cleanValues.college);
+    setAssistKey(cleanValues.assistKey);
     setErrors({});
   };
-  const [courseRecord, setCourseRecord] = React.useState(courseModelProp);
+  const [articulationInformationRecord, setArticulationInformationRecord] =
+    React.useState(articulationInformationModelProp);
   React.useEffect(() => {
     const queryData = async () => {
       const record = idProp
         ? (
             await API.graphql({
-              query: getCourse.replaceAll("__typename", ""),
+              query: getArticulationInformation.replaceAll("__typename", ""),
               variables: { id: idProp },
             })
-          )?.data?.getCourse
-        : courseModelProp;
-      setCourseRecord(record);
+          )?.data?.getArticulationInformation
+        : articulationInformationModelProp;
+      setArticulationInformationRecord(record);
     };
     queryData();
-  }, [idProp, courseModelProp]);
-  React.useEffect(resetStateValues, [courseRecord]);
+  }, [idProp, articulationInformationModelProp]);
+  React.useEffect(resetStateValues, [articulationInformationRecord]);
   const validations = {
-    name: [{ type: "Required" }],
+    college: [{ type: "Required" }],
+    assistKey: [{ type: "Required" }],
   };
   const runValidationTasks = async (
     fieldName,
@@ -80,7 +85,8 @@ export default function CourseUpdateForm(props) {
       onSubmit={async (event) => {
         event.preventDefault();
         let modelFields = {
-          name,
+          college,
+          assistKey,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -111,10 +117,10 @@ export default function CourseUpdateForm(props) {
             }
           });
           await API.graphql({
-            query: updateCourse.replaceAll("__typename", ""),
+            query: updateArticulationInformation.replaceAll("__typename", ""),
             variables: {
               input: {
-                id: courseRecord.id,
+                id: articulationInformationRecord.id,
                 ...modelFields,
               },
             },
@@ -129,32 +135,66 @@ export default function CourseUpdateForm(props) {
           }
         }
       }}
-      {...getOverrideProps(overrides, "CourseUpdateForm")}
+      {...getOverrideProps(overrides, "ArticulationInformationUpdateForm")}
       {...rest}
     >
       <TextField
-        label="Name"
+        label="College"
         isRequired={true}
         isReadOnly={false}
-        value={name}
+        type="number"
+        step="any"
+        value={college}
         onChange={(e) => {
-          let { value } = e.target;
+          let value = isNaN(parseInt(e.target.value))
+            ? e.target.value
+            : parseInt(e.target.value);
           if (onChange) {
             const modelFields = {
-              name: value,
+              college: value,
+              assistKey,
             };
             const result = onChange(modelFields);
-            value = result?.name ?? value;
+            value = result?.college ?? value;
           }
-          if (errors.name?.hasError) {
-            runValidationTasks("name", value);
+          if (errors.college?.hasError) {
+            runValidationTasks("college", value);
           }
-          setName(value);
+          setCollege(value);
         }}
-        onBlur={() => runValidationTasks("name", name)}
-        errorMessage={errors.name?.errorMessage}
-        hasError={errors.name?.hasError}
-        {...getOverrideProps(overrides, "name")}
+        onBlur={() => runValidationTasks("college", college)}
+        errorMessage={errors.college?.errorMessage}
+        hasError={errors.college?.hasError}
+        {...getOverrideProps(overrides, "college")}
+      ></TextField>
+      <TextField
+        label="Assist key"
+        isRequired={true}
+        isReadOnly={false}
+        type="number"
+        step="any"
+        value={assistKey}
+        onChange={(e) => {
+          let value = isNaN(parseInt(e.target.value))
+            ? e.target.value
+            : parseInt(e.target.value);
+          if (onChange) {
+            const modelFields = {
+              college,
+              assistKey: value,
+            };
+            const result = onChange(modelFields);
+            value = result?.assistKey ?? value;
+          }
+          if (errors.assistKey?.hasError) {
+            runValidationTasks("assistKey", value);
+          }
+          setAssistKey(value);
+        }}
+        onBlur={() => runValidationTasks("assistKey", assistKey)}
+        errorMessage={errors.assistKey?.errorMessage}
+        hasError={errors.assistKey?.hasError}
+        {...getOverrideProps(overrides, "assistKey")}
       ></TextField>
       <Flex
         justifyContent="space-between"
@@ -167,7 +207,7 @@ export default function CourseUpdateForm(props) {
             event.preventDefault();
             resetStateValues();
           }}
-          isDisabled={!(idProp || courseModelProp)}
+          isDisabled={!(idProp || articulationInformationModelProp)}
           {...getOverrideProps(overrides, "ResetButton")}
         ></Button>
         <Flex
@@ -179,7 +219,7 @@ export default function CourseUpdateForm(props) {
             type="submit"
             variation="primary"
             isDisabled={
-              !(idProp || courseModelProp) ||
+              !(idProp || articulationInformationModelProp) ||
               Object.values(errors).some((e) => e?.hasError)
             }
             {...getOverrideProps(overrides, "SubmitButton")}

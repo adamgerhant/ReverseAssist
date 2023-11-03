@@ -2,11 +2,13 @@ import requests
 import json
 import os
 import time
+import boto3
+import csv
 # establish a session with requests session
 session = requests.Session()
 
 # As found in AWS Appsync under Settings for your endpoint.
-APPSYNC_API_ENDPOINT_URL = 'http://192.168.56.1:20002/graphql'
+APPSYNC_API_ENDPOINT_URL = 'endpoint'
 
 def make_request(query, variables=None):
     data = {'query': query}
@@ -16,7 +18,7 @@ def make_request(query, variables=None):
     return session.request(
         url=APPSYNC_API_ENDPOINT_URL,
         method='POST',
-        headers={'x-api-key': 'da2-fakeApiId123456'},
+        headers={'x-api-key': '[apiKey]'},
         json=data
     ).json()
     
@@ -61,6 +63,45 @@ def print_coordinates():
         print(f"{locationData[collegeID_str]['lat']}, {locationData[collegeID_str]['lng']}")
         print("\n")
 
+def delete_major(majorId):
+    mutation = """
+    mutation MyMutation($majorId: ID!) {
+        deleteMajor(input: {id: $majorId}) {
+            id
+        }
+    }
+    """
+    variables = {
+        "majorId":majorId
+    }
+    make_request(mutation, variables)
+
+def delete_majors_for_college(college_id):
+    query = """
+    query MyQuery($collegeId: Int!) {
+        listColleges(filter: {collegeId: {eq: $collegeId}}) {
+            items {
+                majors {
+                    items {
+                        id 
+                    }
+                }
+            }
+        }
+    }
+    """
+    variables = {
+        "collegeId" : college_id
+    }
+    response = make_request(query, variables)
+    print(response)
+    colleges = response["data"]["listColleges"]["items"]
+    if(len(colleges)==0):
+        print("no college with id")
+        return
+    for major in colleges[0]["majors"]["items"]:
+        delete_major(major["id"])
+    
 def add_college(college_id, collegeName, location):
 
     mutation = """
@@ -89,12 +130,14 @@ def add_colleges():
         locationData = json.load(file)
 
     for collegeName, college_id in data.items():
+        print("adding college: "+str(college_id) +", "+collegeName)
         add_college(college_id, collegeName, locationData[str(college_id)])
+
 
 def get_college_id(college_id):
     query = """
         query MyQuery($college_id: Int!) {
-            listColleges(filter: {collegeId: {eq: $college_id}}) {
+            listColleges(filter: {collegeId: {eq: $college_id}}, limit:150) {
                 items {
                     id
                 }
@@ -173,7 +216,6 @@ def delete_articulation_information(deleteId):
         "id": deleteId,
     }
     response = make_request(query, variables)
-    print(response)
 
 def articulation_information_exists(courseModelId, assistKey):
     query = """
@@ -231,8 +273,11 @@ def transfer_course_exists(articulationInformationId, transferCourse):
     
     return allTransferCourses["items"][0]["id"]
 
-def add_major(collegeModelId, major):
-    majorId = major_exists(collegeModelId, major["name"])
+
+def add_major(collegeModelId, major, checkIfExists):
+    majorId = False
+    if(checkIfExists):
+        majorId = major_exists(collegeModelId, major["name"])
     if(majorId == False):
         query = """
             mutation MyMutation($name: String!, $collegeMajorsId: ID!) {
@@ -255,8 +300,9 @@ def add_major(collegeModelId, major):
 
     
     for course in major["courses"]:
-        courseId = course_exists(majorId, course["name"])
-        print("courseID: "+courseId)
+        courseId = False
+        if(checkIfExists):
+            courseId = course_exists(majorId, course["name"])
         if(courseId == False):
 
             query = """
@@ -278,10 +324,11 @@ def add_major(collegeModelId, major):
             courseId = response["data"]["createCourse"]["id"]
 
         for articulationInformation in course["articulatedColleges"]:
-            articulationInformationId = articulation_information_exists(courseId, articulationInformation["assistKey"])
+            articulationInformationId = False
+            if(checkIfExists):
+                articulationInformationId = articulation_information_exists(courseId, articulationInformation["assistKey"])
             #if(course["name"]=="CHEM 3B - Chemical Structure and Reactivity (3.00)"):
-                #print("Articulation: "+str(articulationInformation["college"])+" exists: "+str(articulationInformationId))
-
+            #print("Articulation: "+str(articulationInformation["college"])+" exists: "+str(articulationInformationId))
             if(articulationInformationId==False):
                 query = """
                     mutation MyMutation($college: Int!, $assistKey: Int!, $courseArticulatedCollegesId: ID!) {
@@ -309,7 +356,10 @@ def add_major(collegeModelId, major):
                     #if(articulationInformation["college"]==101):
                         #print(response)
             for transferCourse in articulationInformation["transferCourses"]:
-                if(not transfer_course_exists(articulationInformationId, transferCourse)):
+                transferCourseExists = False
+                if(checkIfExists):
+                    transferCourseExists = transfer_course_exists(articulationInformationId, transferCourse)
+                if(not transferCourseExists):
                     query = """
                         mutation MyMutation($name: String!, $articulationInformationTransferCoursesId: ID!) {
                             createTransferCourse(input: {name: $name, articulationInformationTransferCoursesId: $articulationInformationTransferCoursesId}) {
@@ -337,13 +387,45 @@ def add_majors(college_id):
     for major in data:
         add_major(collegeModelId, major)
 
+def db_to_csv():
+    query = """query MyQuery {
+        listColleges(limit: 1000) {
+            nextToken
+                items {
+                    collegeId
+                    collegeName
+                    id
+                    createdAt
+                    updatedAt
+                    latitude
+                    longitude
+                }
+            }
+        }
+    """
+    response = make_request(query)
+    csvData = [["id","__typename","collegeId","collegeName","createdAt","latitude","longitude","updatedAt"]]
+    for college in response["data"]["listColleges"]["items"]:
+        print(college)
+        csvData.append([college["id"], "College", college["collegeId"], college["collegeName"], college["createdAt"], college["latitude"], college["longitude"], college["updatedAt"]])
+    file_path = 'python/colleges.csv'
 
+    with open(file_path, mode='a', newline='') as file:
+        writer = csv.writer(file)
+        for row in csvData:
+            writer.writerow(row)
 
-    
 majorName = "English, Lower Division B.A."
 courseName = "ENGLISH 17 - Shakespeare (4.00)"
+
+#add_college(1, "testcollege", {"lat":0, "lng":0})
+#db_to_csv()
 #print_coordinates()
 #get_coordinates("California Maritime Academy")
 #print(course_exists(79, courseName))
-#add_colleges()
+
+
+#add_college(89, "University of California, Davis", {"lat": 38.5382322,"lng": -121.7617125})
 #add_majors(79)
+#delete_majors_for_college(120)
+#add_colleges()

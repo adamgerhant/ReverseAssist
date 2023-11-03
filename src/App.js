@@ -10,8 +10,11 @@ import { Select, MenuItem, Autocomplete, TextField } from "@mui/material";
 import {FaLinkedin} from 'react-icons/fa'
 import {BsGithub} from 'react-icons/bs'
 import {HiOutlineExternalLink} from 'react-icons/hi'
+import {FiMail} from 'react-icons/fi'
+import {RxCross2} from 'react-icons/rx'
 import allLocations from './data/locations.json'
 import { GoogleMap, LoadScript, Marker,  InfoWindow} from '@react-google-maps/api';
+import { Tooltip } from 'react-tooltip'
 
 const MapMarker = ({openedCollege, setOpenedCollege, collegePosition, articulationInformation, currentCoordinates, targetCollege, major, course})=>{
   return(
@@ -98,16 +101,17 @@ function App() {
   const [openedCollege, setOpenedCollege] = useState()
   const [center, setCenter] = useState({lat: 36.7378, lng: -119.7871})
   const [zoom, setZoom] = useState(6)
-
-  console.log("selected college id: "+selectedCollege)
-  console.log("selectedMajorId: "+selectedMajorId)
-  console.log("selected course Id: "+ selectedCourseId)
+  const [showEmail, setShowEmail] = useState(false)
+  //console.log("selected college id: "+selectedCollege)
+  //console.log("selectedMajorId: "+selectedMajorId)
+  //console.log("selected course Id: "+ selectedCourseId)
   
 
   const getLocation = () => {
   
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
+
         setLocation({
           lat: position.coords.latitude,
           lng: position.coords.longitude,
@@ -235,19 +239,29 @@ function App() {
 
   articulatedCollegesWithName.sort((a, b)=>a.distance>b.distance ?1:-1)
   articulatedCollegesWithNameNoCourse.sort((a, b)=>a.distance>b.distance ?1:-1)
-  console.log( articulatedCollegesWithName)
   const mapRef = useRef()
   return (
-    <div className='flex flex-row h-[100vh]'>
+    <div className='flex flex-row h-[100vh] relative'>
+      {showEmail&&
+            <div className='absolute z-10 left-[150px] top-[90px] bg-white border border-black px-4 py-2 rounded flex flex-row items-center'>
+              adamgerhant@gmail.com
+              <RxCross2 onClick={()=>setShowEmail(false)} className='cursor-pointer rounded-full ml-2 p-[1px] mt-[1px] w-[20px] h-[20px] hover:bg-gray-200 text-gray-800'> x</RxCross2>
+            </div>}
       <div className='flex flex-col w-[480px] h-[100vh] items-center bg-fuchsia-800'>
           <p className='text-2xl text-white font-semibold mt-5'>Created by: Adam Gerhant</p>
 
-          <div className='flex flex-row mt-2 items-center'>
-            <p className='text-xl text-white mx-3 cursor-pointer'>About</p>
+          <div className='flex flex-row mt-2 items-center relative'>
+            <a href="/about" className='text-xl text-white mx-3 cursor-pointer'>About</a>
             <p className='text-xl text-white mx-3 cursor-pointer'>Portfolio</p>
             <FaLinkedin className='w-[25px] h-[25px] white mx-3 cursor-pointer text-white'/>
             <BsGithub className='w-[25px] h-[25px] white mx-3 cursor-pointer text-white'/>
+            
+            <FiMail onClick={()=>setShowEmail(!showEmail)} className='w-[25px] h-[25px] white mx-3 cursor-pointer text-white'/>
+            
+
+            
           </div>
+          
           <p className='text-6xl text-white font-semibold mt-6'>Reverse Assist</p>
 
           <div className='flex flex-col w-[430px] mt-12 bg-white rounded items-center pt-8 pb-16 '>
@@ -261,18 +275,20 @@ function App() {
                 filterOptions={filterOptions}
                 onChange={(e) => {
                   const selectedText = e.target.innerText;
+                  setSelectedMajorId()
+                  setSelectedCourseId()
+                  setArticulatedColleges([])
+                  setCourses([])
+                  setMajors([])
                   if (selectedText) {
                     const selectedCollege = selectableColleges[selectedText];
                     setSelectedCollege(selectedCollege);
-                    setSelectedMajorId()
-                    setSelectedCourseId()
-                    setArticulatedColleges([])
-
+                    console.log("getting majors")
                     const getMajors = 
                     `query getMajors(
                         $collegeId: Int!
                       ){
-                        listColleges(filter: { collegeId: { eq: $collegeId } }){
+                        listColleges(filter: { collegeId: { eq: $collegeId }}, limit: 150 ){
                           items{
                             majors{
                               items{
@@ -289,15 +305,13 @@ function App() {
                       variables: {
                         collegeId: selectedCollege,
                       }
-                    }).then(response=>
+                    }).then(response=>{
+                      console.log("received majors")
+                      console.log(response)
                       setMajors(response.data.listColleges.items[0].majors.items)
-                    )
+                    })
                   }else{
                     setSelectedCollege()
-                    setSelectedMajorId()
-                    setSelectedCourseId()
-                    setArticulatedColleges([])
-
                   }
                 }}
               />
@@ -308,20 +322,22 @@ function App() {
               <p className='text-xl mb-2 mt-10'>Select a major to view courses</p>
               <Autocomplete
                 disablePortal
-                disabled = {!selectedCollege}
+                disabled = {majors.length==0||!selectedCollege}
                 options={majors}
-                value = {majors.find(major=>major.id==selectedMajorId) || !selectedCollege&&{name:"First select a university"} || selectedCollege&&{name:""}}
+                value = {majors.find(major=>major.id==selectedMajorId) || !selectedCollege&&{name:"First select a university"} || selectedCollege&&majors.length==0&&{name:"Getting majors..."} || selectedCollege&&majors.length>0&&{name:""}}
                 getOptionLabel={(option) => option.name}
                 sx={{ width: 390 }}
                 renderInput={(params) => <TextField {...params} />}
                 onChange={(e) => {
                   
                   const selectedText = e.target.innerText;
+                  setSelectedCourseId()
+                  setArticulatedColleges([])
+                  setCourses([])
                   if (selectedText) {
                     const selectedMajorId = majors.find(major=>major.name==selectedText).id;
                     setSelectedMajorId(selectedMajorId);
-                    setSelectedCourseId()
-                    setArticulatedColleges([])
+                    
                     const getCourses = 
                     `query getCourses(
                         $majorId: ID!
@@ -348,9 +364,6 @@ function App() {
                   }
                   else{
                     setSelectedMajorId()
-                    setSelectedCourseId()
-                    setArticulatedColleges([])
-
                   }
                   
                 }}
@@ -368,17 +381,18 @@ function App() {
                     }
                   }
                 }                
-                disabled = {!selectedMajorId}
+                disabled = {courses.length==0||!selectedMajorId}
                 options={courses}
                 getOptionLabel={(option) => option.name}
-                value = {courses.find(course=>course.id==selectedCourseId) || !selectedMajorId&&{name:"First select a major"} || selectedMajorId&&{name:""}}
+                value = {courses.find(course=>course.id==selectedCourseId) || !selectedMajorId&&{name:"First select a major"} || selectedMajorId&&courses.length==0&&{name:"Getting courses..."} || selectedMajorId&&courses.length>0&&{name:""}}
                 sx={{ width: 390 }}
                 renderInput={(params) => <TextField {...params}/>}
                 onChange={(e) => {
                   const selectedText = e.target.innerText;
+                  setArticulatedColleges([])
+
                   if (selectedText) {
                     setGettingCourses(true)
-                    setArticulatedColleges([])
                     const selectedCourseId = courses.find(course=>course.name==selectedText).id;
 
                     setSelectedCourseId(selectedCourseId);
@@ -415,7 +429,6 @@ function App() {
                   }
                   else{
                     setSelectedCourseId()
-                    setArticulatedColleges([])
                   }
                   
                 }}
@@ -428,9 +441,7 @@ function App() {
 
           </div>
             <div className='text-lg w-[85%] text-white font-semibold mt-[-2px] '>
-            in any way. This is a tool I created to help students find colleges with articulated courses. For more information, see the 
-            <a className='text-white underline mx-[5px] cursor-pointer'>About</a>
-            page
+            in any way. This is a tool I created to help students find colleges with articulated courses. 
           </div>
           
       </div>
@@ -519,7 +530,6 @@ function App() {
 
       </div>
         
-
     </div>
     
     
