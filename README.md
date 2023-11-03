@@ -1,70 +1,23 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Reverse Assist helps students find nearby colleges with articulated courses for UC transfer.
+https://www.reverseassist.com
 
-## Available Scripts
+![ReverseAssist](https://github.com/adamgerhant/ReverseAssist/assets/116332429/5643f1a7-d60a-4633-91f7-da63bf29581d)
 
-In the project directory, you can run:
+# Technical Details:
 
-### `npm start`
+Backend: AWS DynamoDB with GraphQL API.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Database generation: Python scripts to parse API data, get courses from PDFs, and upload by making requests to GraphQL API.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Frontend: React+Tailwind
 
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+# Database Generation
+Generating the Database was the most challenging and time consuming part. Over 100,000 PDFs have been parsed into roughly 1 million courses across roughly 1 thousand majors. The general process can be broken down into 4 steps.
+<ul>
+<li>Get metadata: Download college IDs, majors, and PDF document ids. Jacobtbigham's documentation on the various Assist API endpoints to extract this information was extremely helpful for this step. Check out his project here: www.github.com/jacobtbigham/ccc_transfers, www.jacobtbigham.com/transfers</li>
+  
+<li>Create Database: Create GraphQL schema, integrate Python with the GraphQL API</li>
+<li>Parse Data: Use metadata to get every PDF document, and extract articulated courses from each PDF using a custom algorithim</li>
+<li>Upload Data: Use GraphQL mutations to upload reformated information to database</li>
+</ul>
