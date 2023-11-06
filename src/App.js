@@ -550,7 +550,7 @@ function App() {
       <>
       <div className={`flex flex-col items-center relative my-5 ${isMobile?"":"mr-8"} flex-grow`}>
       
-        <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_API_KEY}>
+        <LoadScript googleMapsApiKey="AIzaSyAuQ24lxsw65kbwnScndb9QYlJm-98d3rg">
             <GoogleMap
               mapContainerStyle={{
                 width: '100%',
