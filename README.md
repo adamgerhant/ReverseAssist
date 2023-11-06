@@ -1,6 +1,5 @@
 
 ## Reverse Assist helps students find nearby colleges with articulated courses for UC transfer.
-https://www.reverseassist.com
 
 ![ReverseAssist](https://github.com/adamgerhant/ReverseAssist/assets/116332429/c50ea9ac-c44f-4e10-bb14-8c7474ae7f89)
 
