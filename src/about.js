@@ -14,7 +14,7 @@ const About = () =>{
                 </div>
             </div>
             <div className='w-[700px] text-gray-800 mt-8'>
-                The goal of this webapp is to reverse the directionality of Assist for finding articulated transfer courses. 
+                The goal of this webapp is to reverse the directionality of Assist.org for finding articulated transfer courses. 
                 With Assist, you select a source college, transfer college, and a major to view a document containing articulated courses.
                 Reverse Assist reverses that process by allowing the user to select a transfer college, major, and articulated course, then view all source colleges with that course.
                 For example, instead of searching through dozens of documents to find a college with an articulated course, Reverse Assist directly provides the list of colleges.
