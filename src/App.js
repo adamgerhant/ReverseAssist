@@ -283,7 +283,7 @@ function App() {
           } 
           <p className={`${isMobile?"text-[24px]":"text-[60px]"}  ${isMobile?"":""} text-white font-semibold mt-${isMobile?1:6}`}>Reverse Assist</p>
           
-          <div className={`flex flex-col ${isMobile?`w-[95%] min-w-[300px] mt-2 pt-2 pb-4 ${selectExpanded?"h-[250px]":"h-[80px]"}  overflow-scroll scrollbar`:"w-[430px] mt-12 pt-8 pb-16"} rounded bg-white  items-center `}>
+          <div className={`flex flex-col ${isMobile?`w-[95%] min-w-[300px] mt-2 pt-2 pb-4 ${selectExpanded?"h-[250px]":"h-[80px]"}  overflow-scroll`:"w-[430px] mt-12 pt-8 pb-16"} rounded bg-white  items-center `}>
             <div className='flex flex-col w-[93%]'>
               <p className={isMobile?"text-[16px] text-[#555]":'text-xl mb-2'}>Select a university to view majors</p>
               <Autocomplete
@@ -458,12 +458,12 @@ function App() {
               />
             </div>
           </div>
-          {false&&isMobile&&selectExpanded&&<div onClick={()=>setSelectExpanded(false)}className='flex flex-col items-center mb-1  text-[#444] font-semibold bg-[rgba(255,255,255,1)] w-[160px] border-t border-[#555] rounded-b'>
+          {isMobile&&selectExpanded&&<div onClick={()=>setSelectExpanded(false)}className='flex flex-col items-center mb-1  text-[#444] font-semibold bg-[rgba(255,255,255,1)] w-[160px] border-t border-[#555] rounded-b'>
             <div className='flex flex-row'>
               <BsChevronUp className='mt-[4px] ml-2 h-[16px] w-[16px]'/>
             </div>
           </div>}
-          {false&&isMobile&&!selectExpanded&&<div onClick={()=>setSelectExpanded(true)}className='flex flex-col items-center mb-1  text-[#444] font-semibold bg-[rgba(255,255,255,1)] w-[160px] border-t border-[#555] rounded-b'>
+          {isMobile&&!selectExpanded&&<div onClick={()=>setSelectExpanded(true)}className='flex flex-col items-center mb-1  text-[#444] font-semibold bg-[rgba(255,255,255,1)] w-[160px] border-t border-[#555] rounded-b'>
             <div className='flex flex-row'>
               <BsChevronDown className='mt-[4px] mb-[2px] ml-2 h-[16px] w-[16px]'/>
             </div>
