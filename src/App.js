@@ -458,12 +458,12 @@ function App() {
               />
             </div>
           </div>
-          {isMobile&&selectExpanded&&<div onClick={()=>setSelectExpanded(false)}className='flex flex-col items-center mb-1  text-[#444] font-semibold bg-[rgba(255,255,255,1)] w-[160px] border-t border-[#555] rounded-b'>
+          {isMobile&&selectExpanded&&<div onClick={()=>setSelectExpanded(false)}className='flex flex-col items-center mb-1  text-[#444] font-semibold bg-[rgba(255,255,255,1)] w-[160px] border-t border-[#aaa] rounded-b'>
             <div className='flex flex-row'>
               <BsChevronUp className='mt-[4px] ml-2 h-[16px] w-[16px]'/>
             </div>
           </div>}
-          {isMobile&&!selectExpanded&&<div onClick={()=>setSelectExpanded(true)}className='flex flex-col items-center mb-1  text-[#444] font-semibold bg-[rgba(255,255,255,1)] w-[160px] border-t border-[#555] rounded-b'>
+          {isMobile&&!selectExpanded&&<div onClick={()=>setSelectExpanded(true)}className='flex flex-col items-center mb-1  text-[#444] font-semibold bg-[rgba(255,255,255,1)] w-[160px] border-t border-[#aaa] mt-[1px] rounded-b'>
             <div className='flex flex-row'>
               <BsChevronDown className='mt-[4px] mb-[2px] ml-2 h-[16px] w-[16px]'/>
             </div>
