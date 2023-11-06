@@ -6,15 +6,15 @@ import { useEffect, useRef, useState } from 'react';
 import schoolNamesJSON from "./data/schoolNameToID.json"
 import selectableColleges from './data/selectableColleges.json'
 import collegeJSON from './data/collegeData.json'
-import { Select, MenuItem, Autocomplete, TextField } from "@mui/material";
+import { Select, MenuItem, Autocomplete, TextField, ToggleButtonGroup, ToggleButton } from "@mui/material";
 import {FaLinkedin} from 'react-icons/fa'
-import {BsGithub} from 'react-icons/bs'
+import {BsGithub, BsChevronDown, BsChevronUp} from 'react-icons/bs'
 import {HiOutlineExternalLink} from 'react-icons/hi'
 import {FiMail} from 'react-icons/fi'
 import {RxCross2} from 'react-icons/rx'
+
 import allLocations from './data/locations.json'
 import { GoogleMap, LoadScript, Marker,  InfoWindow} from '@react-google-maps/api';
-import { Tooltip } from 'react-tooltip'
 
 const MapMarker = ({openedCollege, setOpenedCollege, collegePosition, articulationInformation, currentCoordinates, targetCollege, major, course})=>{
   return(
@@ -102,10 +102,25 @@ function App() {
   const [center, setCenter] = useState({lat: 36.7378, lng: -119.7871})
   const [zoom, setZoom] = useState(6)
   const [showEmail, setShowEmail] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+  const [tab, setTab] = useState("Table")
+  const [selectExpanded, setSelectExpanded] = useState(false)
   //console.log("selected college id: "+selectedCollege)
   //console.log("selectedMajorId: "+selectedMajorId)
   //console.log("selected course Id: "+ selectedCourseId)
   
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.screen.width < 768);
+    };
+
+    window.addEventListener('resize', checkScreenSize);
+
+    checkScreenSize();
+    return () => {
+      window.removeEventListener('resize', checkScreenSize);
+    };
+  }, []);
 
   const getLocation = () => {
   
@@ -241,36 +256,42 @@ function App() {
   articulatedCollegesWithNameNoCourse.sort((a, b)=>a.distance>b.distance ?1:-1)
   const mapRef = useRef()
   return (
-    <div className='flex flex-row h-[100vh] relative'>
+    <div className={`flex flex-${isMobile?"col":"row"} h-[100vh] relative`}>
       {showEmail&&
             <div className='absolute z-10 left-[150px] top-[90px] bg-white border border-black px-4 py-2 rounded flex flex-row items-center'>
               adamgerhant@gmail.com
               <RxCross2 onClick={()=>setShowEmail(false)} className='cursor-pointer rounded-full ml-2 p-[1px] mt-[1px] w-[20px] h-[20px] hover:bg-gray-200 text-gray-800'> x</RxCross2>
             </div>}
-      <div className='flex flex-col w-[480px] h-[100vh] items-center bg-fuchsia-800'>
-          <p className='text-2xl text-white font-semibold mt-5'>Created by: Adam Gerhant</p>
+      <div className={`flex flex-col ${isMobile?"pb-2":"w-[480px] h-[100%]"}  items-center bg-fuchsia-800`}>
+          {!isMobile&&
+          <>
+            <p className='text-2xl text-white font-semibold mt-5'>Created by: Adam Gerhant</p>
 
-          <div className='flex flex-row mt-2 items-center relative'>
-            <a href="/about" className='text-xl text-white mx-3 cursor-pointer'>About</a>
-            <p className='text-xl text-white mx-3 cursor-pointer'>Portfolio</p>
-            <FaLinkedin className='w-[25px] h-[25px] white mx-3 cursor-pointer text-white'/>
-            <BsGithub className='w-[25px] h-[25px] white mx-3 cursor-pointer text-white'/>
-            
-            <FiMail onClick={()=>setShowEmail(!showEmail)} className='w-[25px] h-[25px] white mx-3 cursor-pointer text-white'/>
-            
+            <div className='flex flex-row mt-2 items-center relative'>
+              <a href="/about" className='text-xl text-white mx-3 cursor-pointer'>About</a>
+              <p className='text-xl text-white mx-3 cursor-pointer'>Portfolio</p>
+              <FaLinkedin className='w-[25px] h-[25px] white mx-3 cursor-pointer text-white'/>
 
-            
-          </div>
+              <a href="https://github.com/adamgerhant/ReverseAssist" target="_blank" rel="noopener noreferrer">
+                <BsGithub  className='w-[25px] h-[25px] white mx-3 cursor-pointer text-white'/>
+              </a>
+              
+              <FiMail onClick={()=>setShowEmail(!showEmail)} className='w-[25px] h-[25px] white mx-3 cursor-pointer text-white'/>
+              
+            </div>
+            </>
+          } 
+          <p className={`text-${isMobile?"2xl":"6xl"}  ${isMobile?"":""} text-white font-semibold mt-${isMobile?1:6}`}>Reverse Assist</p>
           
-          <p className='text-6xl text-white font-semibold mt-6'>Reverse Assist</p>
-
-          <div className='flex flex-col w-[430px] mt-12 bg-white rounded items-center pt-8 pb-16 '>
-            <div className='flex flex-col'>
-              <p className='text-xl mb-2'>Select a university to view majors</p>
+          <div className={`flex flex-col ${isMobile?`w-[95%] min-w-[300px] mt-2 pt-2 pb-4 ${selectExpanded?"h-[250px]":"h-[80px]"}  overflow-scroll`:"w-[430px] mt-12 pt-8 pb-16"} rounded bg-white  items-center `}>
+            <div className='flex flex-col w-[93%]'>
+              <p className={isMobile?"text-[16px] text-[#555]":'text-xl mb-2'}>Select a university to view majors</p>
               <Autocomplete
                 disablePortal
+                
                 options={Object.keys(selectableColleges)}
-                sx={{ width: 390 }}
+                size= {isMobile?"small":""}
+                sx={{ width: isMobile?'full':390}}
                 renderInput={(params) => <TextField {...params}/>}
                 filterOptions={filterOptions}
                 onChange={(e) => {
@@ -290,7 +311,7 @@ function App() {
                       ){
                         listColleges(filter: { collegeId: { eq: $collegeId }}, limit: 150 ){
                           items{
-                            majors{
+                            majors(limit:200){
                               items{
                                 id
                                 name
@@ -317,16 +338,17 @@ function App() {
               />
             </div>
             
-            <div className='flex flex-col'>
+            <div className='flex flex-col w-[93%]'>
 
-              <p className='text-xl mb-2 mt-10'>Select a major to view courses</p>
+              <p className={isMobile?"text-[16px] mt-2  text-[#555]":'text-xl mb-2'}>Select a major to view courses</p>
               <Autocomplete
                 disablePortal
                 disabled = {majors.length==0||!selectedCollege}
                 options={majors}
                 value = {majors.find(major=>major.id==selectedMajorId) || !selectedCollege&&{name:"First select a university"} || selectedCollege&&majors.length==0&&{name:"Getting majors..."} || selectedCollege&&majors.length>0&&{name:""}}
                 getOptionLabel={(option) => option.name}
-                sx={{ width: 390 }}
+                size= {isMobile?"small":""}
+                sx={{ width: isMobile?'full':390}}
                 renderInput={(params) => <TextField {...params} />}
                 onChange={(e) => {
                   
@@ -370,8 +392,8 @@ function App() {
               />
             </div>
 
-            <div className='flex flex-col'>
-              <p className='text-xl mb-2 mt-10'>Select a course</p>
+            <div className='flex flex-col w-[93%]'>
+              <p className={isMobile?"text-[16px] mt-2  text-[#555]":'text-xl mb-2'}>Select a course</p>
               <Autocomplete
                 disablePortal={true}
                 ListboxProps={
@@ -385,7 +407,8 @@ function App() {
                 options={courses}
                 getOptionLabel={(option) => option.name}
                 value = {courses.find(course=>course.id==selectedCourseId) || !selectedMajorId&&{name:"First select a major"} || selectedMajorId&&courses.length==0&&{name:"Getting courses..."} || selectedMajorId&&courses.length>0&&{name:""}}
-                sx={{ width: 390 }}
+                size= {isMobile?"small":""}
+                sx={{ width: isMobile?'full':390}}
                 renderInput={(params) => <TextField {...params}/>}
                 onChange={(e) => {
                   const selectedText = e.target.innerText;
@@ -435,6 +458,18 @@ function App() {
               />
             </div>
           </div>
+          {isMobile&&selectExpanded&&<div onClick={()=>setSelectExpanded(false)}className='flex flex-col items-center mb-1  text-[#444] font-semibold bg-[rgba(255,255,255,1)] w-[160px] border-t border-[#555] rounded-b'>
+            <div className='flex flex-row'>
+              <BsChevronUp className='mt-[4px] ml-2 h-[16px] w-[16px]'/>
+            </div>
+          </div>}
+          {isMobile&&!selectExpanded&&<div onClick={()=>setSelectExpanded(true)}className='flex flex-col items-center mb-1  text-[#444] font-semibold bg-[rgba(255,255,255,1)] w-[160px] border-t border-[#555] rounded-b'>
+            <div className='flex flex-row'>
+              <BsChevronDown className='mt-[4px] mb-[2px] ml-2 h-[16px] w-[16px]'/>
+            </div>
+          </div>}
+          {!isMobile&&
+          <>
           <div className='text-lg w-[85%] text-white mt-[110px] font-semibold flex flex-row'>
             Reverse Assist is not affiliated with
             <a href="https://www.assist.org" target="_blank" rel="noopener noreferrer" className='text-white underline mx-[5px] cursor-pointer'>Assist.org</a> 
@@ -443,62 +478,83 @@ function App() {
             <div className='text-lg w-[85%] text-white font-semibold mt-[-2px] '>
             in any way. This is a tool I created to help students find colleges with articulated courses. 
           </div>
-          
+          </>}
       </div>
-      <div className='flex flex-col items-center mx-10 relative bg-white'>
-
-        <div className='flex flex-row items-center mt-5'>
-            <div className='flex flex-row  w-[255px] text-lg font-semibold text-gray-800 '>
-             
-              <TextField 
-                label="College Name"
-                value={collegeNameFilter}
-                onChange={(e)=>setCollegeNameFilter(e.target.value)}
-                size="small"
-                sx={{width:"250px", marginLeft:"-8px"}}
-              />
-              </div>
-            
-            <div className='w-[155px] text-lg font-semibold text-gray-800'>Assist link</div>
-            <div className='w-[130px] text-lg font-semibold text-gray-800 pr-5'>Courses</div>
-            <div className='w-[90px] text-lg font-semibold text-gray-800 pr-5'>Distance</div>
-
+      {isMobile&&
+        <div className='w-full flex flex-col items-center'>
+          <ToggleButtonGroup
+              color="primary"
+              value={tab}
+              exclusive
+              onChange={(e)=>setTab(e.target.value)}
+              aria-label="Platform"
+            >
+              <ToggleButton value="Table" sx={{width:150, height:35, marginTop:"10px"}}>Table</ToggleButton>
+              <ToggleButton value="Map" sx={{width:150, height:35, marginTop:"10px"}}>Map</ToggleButton>
+          </ToggleButtonGroup>
         </div>
-        
-        <div className=' w-[685px] flex flex-col  mt-2 mb-5 px-5 border rounded overflow-y-scroll   h-[100vh]'>
-          
-          {articulatedCollegesWithName.map((articulationInformation, i)=>{
-            if(articulationInformation.transferCourses.items.length>0){
-              return(<ArticulationCard articulationInformation={articulationInformation} currentCoordinates={currentCoordinates} getLocation={getLocation}/>)
-            }} 
-          )}
+      }
+      
+      {(!isMobile||tab=="Table")&&
+        <div className={isMobile?"w-full overflow-scroll flex":""}>
+          <div className={`flex flex-col ${isMobile?"mx-1":"mx-10"} items-center relative bg-white`}>
+            <div className='flex flex-row items-center mt-5'>
+                <div className='flex flex-row  w-[255px] text-lg font-semibold text-gray-800 '>
+                
+                  <TextField 
+                    label="College Name"
+                    value={collegeNameFilter}
+                    onChange={(e)=>setCollegeNameFilter(e.target.value)}
+                    size="small"
+                    sx={{width:"250px", marginLeft:"-8px"}}
+                  />
+                  </div>
+                
+                <div className='w-[155px] text-lg font-semibold text-gray-800'>Assist link</div>
+                <div className='w-[130px] text-lg font-semibold text-gray-800 pr-5'>Courses</div>
+                <div className='w-[90px] text-lg font-semibold text-gray-800 pr-5'>Distance</div>
 
-          {articulatedCollegesWithNameNoCourse.map((articulationInformation, i)=>
-            <ArticulationCard articulationInformation={articulationInformation} currentCoordinates={currentCoordinates} getLocation={getLocation}/>
-          )}
-          {!gettingCourses&&articulatedColleges.length==0&&
-            <div className=' h-[100vh] flex justify-center items-center text-2xl font-semibold text-gray-800'>
-              No course selected
-            </div>}
-          {gettingCourses&&
-            <div className='h-[100vh] flex justify-center items-center text-2xl font-semibold text-gray-800'>
-              Getting courses
-              <svg aria-hidden="true" className="w-8 h-8 ml-5 mt-1 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
-                <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
-            </svg>
             </div>
-          }
+
+            <div className=' w-[685px] flex flex-col  mt-2 mb-5 px-5 border rounded overflow-y-scroll h-[840px]'>
+              
+              {articulatedCollegesWithName.map((articulationInformation, i)=>{
+                if(articulationInformation.transferCourses.items.length>0){
+                  return(<ArticulationCard articulationInformation={articulationInformation} currentCoordinates={currentCoordinates} getLocation={getLocation}/>)
+                }} 
+              )}
+
+              {articulatedCollegesWithNameNoCourse.map((articulationInformation, i)=>
+                <ArticulationCard articulationInformation={articulationInformation} currentCoordinates={currentCoordinates} getLocation={getLocation}/>
+              )}
+              {!gettingCourses&&articulatedColleges.length==0&&
+                <div className=' h-[100vh] flex justify-center items-center text-2xl font-semibold text-gray-800'>
+                  No course selected
+                </div>}
+              {gettingCourses&&
+                <div className='h-[100vh] flex justify-center items-center text-2xl font-semibold text-gray-800'>
+                  Getting courses
+                  <svg aria-hidden="true" className="w-8 h-8 ml-5 mt-1 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
+                    <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
+                </svg>
+                </div>
+              }
+            </div>
+
+          </div>
+
         </div>
-        
-      </div>
-      <div className='flex flex-col items-center relative my-5 mr-8 flex-grow'>
+      }
+      {(!isMobile||tab=="Map")&&
+      <>
+      <div className={`flex flex-col items-center relative my-5 ${isMobile?"":"mr-8"} flex-grow`}>
       
         <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_API_KEY}>
             <GoogleMap
               mapContainerStyle={{
                 width: '100%',
-                height: '100vh'
+                height: '100%'
               }}
               center={center}
               zoom={zoom}
@@ -519,7 +575,7 @@ function App() {
 
                   return(
                     <MapMarker key={i} openedCollege={openedCollege} setOpenedCollege={setOpenedCollege} collegePosition={collegePosition} articulationInformation={articulationInformation} currentCoordinates={currentCoordinates} targetCollege={targetCollege} major={major} course={course}/>
-                   
+                  
 
                   )
                 }
@@ -529,6 +585,9 @@ function App() {
           </LoadScript>
 
       </div>
+      </>
+      }
+      
         
     </div>
     

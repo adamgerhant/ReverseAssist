@@ -155,9 +155,10 @@ def major_exists(collegeModelId, major_name):
     query = """
             query MyQuery($collegeModelId: ID!, $major_name: String!) {
                 getCollege(id: $collegeModelId) {
-                    majors(filter: {name: {eq: $major_name}}) {
+                    majors(filter: {name: {eq: $major_name}}, limit:1000) {
                         items {
                             id
+                            name
                         }
                     }
     
@@ -174,12 +175,15 @@ def major_exists(collegeModelId, major_name):
     allMajors = response["data"]["getCollege"]["majors"]
     if(allMajors == None or len(allMajors["items"])==0):
         return False
+    for index in range(1, len(allMajors["items"])):
+        delete_major(allMajors["items"][index]["id"])
+        print(allMajors["items"][index]["name"] + " deleted")
     return allMajors["items"][0]["id"]   
 def course_exists(majorModelId, course_name):
     query = """
             query MyQuery($majorModelId: ID!, $course_name: String!) {
                 getMajor(id: $majorModelId) {
-                    courseArr(filter: {name: {eq: $course_name}}) {
+                    courseArr(filter: {name: {eq: $course_name}}, limit:200) {
                         items {
                             name
                             id
@@ -277,6 +281,7 @@ def add_major(collegeModelId, major, checkIfExists):
     majorId = False
     if(checkIfExists):
         majorId = major_exists(collegeModelId, major["name"])
+
     if(majorId == False):
         query = """
             mutation MyMutation($name: String!, $collegeMajorsId: ID!) {
@@ -297,7 +302,7 @@ def add_major(collegeModelId, major, checkIfExists):
 
         majorId = response["data"]["createMajor"]["id"]
 
-    
+    print("adding major: "+major["name"])
     for course in major["courses"]:
         courseId = False
         if(checkIfExists):
@@ -416,6 +421,7 @@ def db_to_csv():
 
 majorName = "English, Lower Division B.A."
 courseName = "ENGLISH 17 - Shakespeare (4.00)"
+
 
 #add_college(1, "testcollege", {"lat":0, "lng":0})
 #db_to_csv()

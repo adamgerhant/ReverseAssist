@@ -8,7 +8,7 @@ import math
 import os
 import fitz  #pip install PyMuPDF
 import io
-from Database import add_major, get_college_id
+from Database import add_major, get_college_id, major_exists
 from PDFExtractor import PDFExtractor
 import threading
 
@@ -192,57 +192,63 @@ class PDFGrabber():
     #--------------------main function------------------#
     def parse_courses_from_major(self, majorData, threadName, checkIfExists):
         collegeModelId = get_college_id(self.school_id)
+        
         if(not collegeModelId):
             print("college does not exist")
             return
         for major in majorData:
-            print("running: "+threadName+" major: "+major)
-
-            start_time = time.time()
-
-            with open('src/data/schoolNameToID.json', 'r') as file:
-                schoolNameData = json.load(file)
-            collegeData = schoolNameData.items()
-
-            #with open(f'python/colleges/{self.school_id}/coursedata.json', 'r') as courseFile:
-                #courseData = json.load(courseFile)
-
-            courseArr = []
+            if(major_exists(collegeModelId, major)):
+                pass#print("already added: "+major)
+            else:
+                print("missing major: "+major)
+            if(False):
             
-            for collegeName, collegeID in collegeData:
-                with open(f'python/colleges/{self.school_id}/keys/{collegeID}keys.json', 'r') as keyFile:
-                    keyData = json.load(keyFile)
-                    reports = keyData["reports"]
-                    keyOBJArr = [obj for obj in reports if obj.get('label') == major]
-                    if(len(keyOBJArr)>0):
-                        key = keyOBJArr[0]["key"]
+                print("running: "+threadName+" major: "+major)
+                start_time = time.time()
 
-                        #file_name = f'python/colleges/{self.school_id}/documents/{collegeID}/{key}.pdf'
-                        #print(f"{threadName}: making request to: "+str(collegeName))
-                        
-                        pdf_stream = self.get_document_for_major(major, collegeID)
-                        pdfOBJ = PDFExtractor(file_name="", pdf_stream=pdf_stream)
-                        courses = pdfOBJ.dict_from_pdf()
-                        for course in courses:
+                with open('src/data/schoolNameToID.json', 'r') as file:
+                    schoolNameData = json.load(file)
+                collegeData = schoolNameData.items()
 
-                            articulationInformation = {"college":collegeID, "assistKey":key, "transferCourses": course["transferCourses"]}
+                #with open(f'python/colleges/{self.school_id}/coursedata.json', 'r') as courseFile:
+                    #courseData = json.load(courseFile)
+
+                courseArr = []
+                
+                for collegeName, collegeID in collegeData:
+                    with open(f'python/colleges/{self.school_id}/keys/{collegeID}keys.json', 'r') as keyFile:
+                        keyData = json.load(keyFile)
+                        reports = keyData["reports"]
+                        keyOBJArr = [obj for obj in reports if obj.get('label') == major]
+                        if(len(keyOBJArr)>0):
+                            key = keyOBJArr[0]["key"]
+
+                            #file_name = f'python/colleges/{self.school_id}/documents/{collegeID}/{key}.pdf'
+                            #print(f"{threadName}: making request to: "+str(collegeName))
+                            
+                            pdf_stream = self.get_document_for_major(major, collegeID)
+                            pdfOBJ = PDFExtractor(file_name="", pdf_stream=pdf_stream)
+                            courses = pdfOBJ.dict_from_pdf()
+                            for course in courses:
+
+                                articulationInformation = {"college":collegeID, "assistKey":key, "transferCourses": course["transferCourses"]}
+                                    
+                                courseFromMajor = [courseOBJ for courseOBJ in courseArr if courseOBJ.get('name') == course["courseName"]]
                                 
-                            courseFromMajor = [courseOBJ for courseOBJ in courseArr if courseOBJ.get('name') == course["courseName"]]
-                            
-                            if(len(courseFromMajor)==0):
-                                Course = {"name": course["courseName"], "articulatedColleges": [articulationInformation]}
-                                courseArr.append(Course)
-                            else:
-                                Course = courseFromMajor[0]
-                                Course["articulatedColleges"].append(articulationInformation)
-                            
-            Major = {"name": major, "courses": courseArr}
-            print(f"{threadName}: Adding major: "+str(major))
+                                if(len(courseFromMajor)==0):
+                                    Course = {"name": course["courseName"], "articulatedColleges": [articulationInformation]}
+                                    courseArr.append(Course)
+                                else:
+                                    Course = courseFromMajor[0]
+                                    Course["articulatedColleges"].append(articulationInformation)
+                                
+                Major = {"name": major, "courses": courseArr}
+                print(f"{threadName}: Adding major: "+str(major))
 
-            add_major(collegeModelId, Major, checkIfExists)
-            end_time = time.time()
+                add_major(collegeModelId, Major, checkIfExists)
+                end_time = time.time()
 
-            print(f"{threadName}: Time to add major: {end_time - start_time}")
+                print(f"{threadName}: Time to add major: {end_time - start_time}")
 
     
         #with open(f"python/colleges/{self.school_id}/courseData.json", "w") as file:
@@ -260,7 +266,7 @@ def parse_courses_all_majors_multithreaded(collegeId, checkIfExists):
     with open(f'python/majors/{collegeId}majors.json', 'r') as majorFile:
         majorData = json.load(majorFile)
 
-    numThreads = 3
+    numThreads = 25
 
     groupedMajorData = []
     extendedMajorData = []
@@ -279,12 +285,22 @@ def parse_courses_all_majors_multithreaded(collegeId, checkIfExists):
             arrayForThread = groupedMajorData[i]
             thread = threading.Thread(target=run_parse_courses_from_major, args=(pdfOBJ, arrayForThread, "Thread "+str(i)))
             thread.start()
-            time.sleep(50) #increase time
+            #time.sleep(30)
 
         for thread in threads:
             thread.join()
     else:
         print("The arrays are different")
+
+#bugged at: 
+# (UCSD)
+# Public Health with Concentration in Biostatistics B.S. 
+# PSYC 2 - General Psychology: Biological Foundations (4.00)
+
+# Psychology B.S. with a Specialization in Human Health
+# PHYS 2B - Physics - Electricity and Magnetism (4.00)
+
+# International Studies - Sociology  B.A.
 
 
 #step 1: get majors for all UCs
@@ -295,8 +311,8 @@ def parse_courses_all_majors_multithreaded(collegeId, checkIfExists):
 #pdfOBJ.get_keys_for_university()
 
 #step 3: parse courses from assist and add to database
-#params: schoolId, checkIfExists: checks if item to add already exists if set to True. Safer but ~20-30% slower.
-#parse_courses_all_majors_multithreaded(7, True)
+#params: schoolId, checkIfExists: checks if item to add already exists if set to True. Safer but 2-3x slower.
+parse_courses_all_majors_multithreaded(144, True)
 
 #UC ids
 #{"University of California, Berkeley": 79,
@@ -311,6 +327,7 @@ def parse_courses_all_majors_multithreaded(collegeId, checkIfExists):
 #}
 
 #other function examples:
-#pdfOBJ.parse_courses_from_major(["Bioengineering B.S."], "thread 0", False)
+#pdfOBJ = PDFGrabber(120, 0.5)
+#pdfOBJ.parse_courses_from_major(["Environmental Engineering, B.S."], "thread 0", True)
 #pdfOBJ.save_documents_for_major("Electrical Engineering & Computer Sciences, Lower Division B.S.")
 #pdfOBJ.parse_courses_for_major_from_file("American Studies, Lower Division B.A.")
