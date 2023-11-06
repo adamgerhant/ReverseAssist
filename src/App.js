@@ -284,7 +284,7 @@ function App() {
           <p className={`${isMobile?"text-[24px]":"text-[60px]"}  ${isMobile?"":""} text-white font-semibold mt-${isMobile?1:6}`}>Reverse Assist</p>
           
           <div className={`flex flex-col ${isMobile?`w-[95%] min-w-[300px] mt-2 pt-2 pb-4 ${selectExpanded?"h-[250px]":"h-[80px]"}  overflow-scroll`:"w-[430px] mt-12 pt-8 pb-16"} rounded bg-white  items-center `}>
-            <div className='flex flex-col w-[93%]'>
+            <div className={`flex flex-col w-[93%] ${isMobile?"":"ml-[10px]"}`}>
               <p className={isMobile?"text-[16px] text-[#555]":'text-xl mb-2'}>Select a university to view majors</p>
               <Autocomplete
                 disablePortal
@@ -338,7 +338,7 @@ function App() {
               />
             </div>
             
-            <div className='flex flex-col w-[93%]'>
+            <div className={`flex flex-col w-[93%] ${isMobile?"":"ml-[10px]"}`}>
 
               <p className={isMobile?"text-[16px] mt-2  text-[#555]":'text-xl mb-2 mt-8'}>Select a major to view courses</p>
               <Autocomplete
@@ -392,7 +392,7 @@ function App() {
               />
             </div>
 
-            <div className='flex flex-col w-[93%]'>
+            <div className={`flex flex-col w-[93%] ${isMobile?"":"ml-[10px]"}`}>
               <p className={isMobile?"text-[16px] mt-2  text-[#555]":'text-xl mb-2 mt-8'}>Select a course</p>
               <Autocomplete
                 disablePortal={true}
