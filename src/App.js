@@ -269,14 +269,13 @@ function App() {
 
             <div className='flex flex-row mt-2 items-center relative'>
               <a href="/about" className='text-xl text-white mx-3 cursor-pointer'>About</a>
-              <p className='text-xl text-white mx-3 cursor-pointer'>Portfolio</p>
-              <FaLinkedin className='w-[25px] h-[25px] white mx-3 cursor-pointer text-white'/>
+              <a href="https://adamgerhant.github.io/portfolio" target="_black" rel="noopener noreferrer" className='text-xl text-white mx-3 cursor-pointer'>Portfolio</a>
 
               <a href="https://github.com/adamgerhant/ReverseAssist" target="_blank" rel="noopener noreferrer">
                 <BsGithub  className='w-[25px] h-[25px] white mx-3 cursor-pointer text-white'/>
               </a>
               
-              <FiMail onClick={()=>setShowEmail(!showEmail)} className='w-[25px] h-[25px] white mx-3 cursor-pointer text-white'/>
+              {/*<FiMail onClick={()=>setShowEmail(!showEmail)} className='w-[25px] h-[25px] white mx-3 cursor-pointer text-white'/>*/}
               
             </div>
             </>

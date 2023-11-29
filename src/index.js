@@ -13,8 +13,21 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <Router>
         <Routes>
-            <Route path="/" exact element={<App/>} />
-            <Route path="/about" element={<About/>} />
+            <Route path="/" exact element={
+                <App/>
+            } />
+            <Route path="/about" element={
+
+                <>
+                    <div className='h-[100vh] w-full bg-[rgba(0,0,0,0.1)] absolute z-1 '>
+                        <App/>
+                    </div>
+                    <div className='h-[100vh] w-full bg-[rgba(0,0,0,0.1)] absolute z-2 flex items-center justify-center'>
+                        <a href="/" className='h-[100vh] w-full'/>
+                        <About/>
+                    </div>
+                </>
+            } />
         </Routes>
     
     </Router>
